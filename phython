@@ -1,0 +1,93 @@
+
+
+# Game elements
+astermport pygame
+import math
+import random
+
+# Initialize pygame
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("Space Explorer - Joystick Edition")
+
+# Joystick setup
+pygame.joystick.init()
+joystick = pygame.joystick.Joystick(0)
+joystick.init()
+
+# Colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+RED = (255, 0, 0)
+
+# Player
+player_pos = [400, 300]
+player_speed = 5
+player_size = 20oids = []
+crystals = []
+lasers = []
+score = 0
+lives = 3
+
+# Game loop
+clock = pygame.time.Clock()
+running = True
+
+while running:
+    # Event handling
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.JOYBUTTONDOWN:
+            if event.button == 0:  # Fire button
+                lasers.append([player_pos[0], player_pos[1], 10, 0])  # x, y, size, speed
+    
+    # Get joystick input
+    x_axis = joystick.get_axis(0)
+    y_axis = joystick.get_axis(1)
+    
+    # Move player
+    player_pos[0] += x_axis * player_speed
+    player_pos[1] += y_axis * player_speed
+    
+    # Keep player on screen
+    player_pos[0] = max(player_size, min(800 - player_size, player_pos[0]))
+    player_pos[1] = max(player_size, min(600 - player_size, player_pos[1]))
+    
+    # Spawn asteroids and crystals randomly
+    if random.random() < 0.02:
+        side = random.randint(0, 3)
+        if side == 0:  # top
+            asteroids.append([random.randint(0, 800), -20, random.randint(3, 8)])
+        elif side == 1:  # right
+            asteroids.append([820, random.randint(0, 600), random.randint(3, 8)])
+        elif side == 2:  # bottom
+            asteroids.append([random.randint(0, 800), 620, random.randint(3, 8)])
+        else:  # left
+            asteroids.append([-20, random.randint(0, 600), random.randint(3, 8)])
+    
+    if random.random() < 0.01 and len(crystals) < 5:
+        crystals.append([random.randint(20, 780), random.randint(20, 580)])
+    
+    # Update game objects
+    # ... (collision detection, movement, etc.)
+    
+    # Drawing
+    screen.fill(BLACK)
+    
+    # Draw player (triangle pointing up)
+    pygame.draw.polygon(screen, WHITE, [
+        (player_pos[0], player_pos[1] - player_size),
+        (player_pos[0] - player_size/2, player_pos[1] + player_size/2),
+        (player_pos[0] + player_size/2, player_pos[1] + player_size/2)
+    ])
+    
+    # Draw other game objects
+    # ...
+    
+    pygame.display.flip()
+    clock.tick(60)
+
+pygame.quit()
