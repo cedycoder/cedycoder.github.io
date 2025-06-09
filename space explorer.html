@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Joystick Space Explorer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #gameCanvas {
+            display: block;
+            margin: 0 auto;
+            background-color: #000;
+        }
+        #joystick {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            left: 50px;
+            bottom: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #joystickKnob {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            position: relative;
+        }
+        #gameUI {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 20px;
+        }
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 40px;
+            text-align: center;
+            display: none;
+        }
+        #fireButton {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255, 0, 0, 0.3);
+            border-radius: 50%;
+            right: 50px;
+            bottom: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="joystick"><div id="joystickKnob"></div></div>
+    <div id="fireButton">FIRE</div>
+    <div id="gameUI">
+        Score: <span id="score">0</span> | 
+        Lives: <span id="lives">3</span>
+    </div>
+    <div id="gameOver">
+        GAME OVER<br>
+        <span id="finalScore">0</span> points<br>
+        <button onclick="resetGame()">Play Again</button>
+    </div>
+
+    <script>
+        // Game elements
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const joystickKnob = document.getElementById('joystickKnob');
+        const scoreElement = document.getElementById('score');
+        const livesElement = document.getElementById('lives');
+        const gameOverElement = document.getElementById('gameOver');
+        const finalScoreElement = document.getElementById('finalScore');
+        const fireButton = document.getElementById('fireButton');
+
+        // Game state
+        let gameRunning = true;
+        let score = 0;
+        let lives = 3;
+        let lastTime = 0;
+
+        // Joystick state
+        let joystickX = 0;
+        let joystickY = 0;
+        let firePressed = false;
+
+        // Player
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            size: 20,
+            speed: 5,
+            color: '#FFFFFF'
+        };
+
+        // Game objects
+        let asteroids = [];
+        let crystals = [];
+        let lasers = [];
+
+        // Touch controls
+        let joystickActive = false;
+        let joystickStartX = 0;
+        let joystickStartY = 0;
+        let joystickCenterX = 0;
+        let joystickCenterY = 0;
+
+        // Initialize joystick position
+        const joystickElement = document.getElementById('joystick');
+        const joystickRect = joystickElement.getBoundingClientRect();
+        joystickCenterX = joystickRect.left + joystickRect.width / 2;
+        joystickCenterY = joystickRect.top + joystickRect.height / 2;
+
+        // Gamepad support
+        let gamepad = null;
+
+        // Event listeners
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
+        window.addEventListener('gamepadconnected', (e) => {
+            console.log('Gamepad connected');
+            gamepad = e.gamepad;
+        });
+        window.addEventListener('gamepaddisconnected', (e) => {
+            console.log('Gamepad disconnected');
+            gamepad = null;
+        });
+
+        // Touch controls
+        joystickElement.addEventListener('touchstart', handleJoystickStart, {passive: false});
+        joystickElement.addEventListener('touchmove', handleJoystickMove, {passive: false});
+        joystickElement.addEventListener('touchend', handleJoystickEnd, {passive: false});
+        fireButton.addEventListener('touchstart', handleFireStart, {passive: false});
+        fireButton.addEventListener('touchend', handleFireEnd, {passive: false});
+
+        // Mouse controls (for desktop testing)
+        fireButton.addEventListener('mousedown', handleFireStart);
+        fireButton.addEventListener('mouseup', handleFireEnd);
+
+        function handleJoystickStart(e) {
+            e.preventDefault();
+            joystickActive = true;
+            const touch = e.touches[0];
+            joystickStartX = touch.clientX;
+            joystickStartY = touch.clientY;
+        }
+
+        function handleJoystickMove(e) {
+            if (!joystickActive) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            
+            // Calculate joystick position
+            const deltaX = touch.clientX - joystickStartX;
+            const deltaY = touch.clientY - joystickStartY;
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            const maxDistance = 50;
+            
+            if (distance > maxDistance) {
+                const angle = Math.atan2(deltaY, deltaX);
+                joystickX = Math.cos(angle) * maxDistance;
+                joystickY = Math.sin(angle) * maxDistance;
+            } else {
+                joystickX = deltaX;
+                joystickY = deltaY;
+            }
+            
+            // Update joystick knob position
+            joystickKnob.style.transform = `translate(${joystickX}px, ${joystickY}px)`;
+        }
+
+        function handleJoystickEnd(e) {
+            e.preventDefault();
+            joystickActive = false;
+            joystickX = 0;
+            joystickY = 0;
+            joystickKnob.style.transform = 'translate(0, 0)';
+        }
+
+        function handleFireStart(e) {
+            e.preventDefault();
+            firePressed = true;
+            fireButton.style.backgroundColor = 'rgba(255, 0, 0, 0.6)';
+        }
+
+        function handleFireEnd(e) {
+            e.preventDefault();
+            firePressed = false;
+            fireButton.style.backgroundColor = 'rgba(255, 0, 0, 0.3)';
+        }
+
+        function handleKeyDown(e) {
+            switch(e.key) {
+                case 'ArrowLeft': joystickX = -1; break;
+                case 'ArrowRight': joystickX = 1; break;
+                case 'ArrowUp': joystickY = -1; break;
+                case 'ArrowDown': joystickY = 1; break;
+                case ' ': firePressed = true; break;
+            }
+        }
+
+        function handleKeyUp(e) {
+            switch(e.key) {
+                case 'ArrowLeft': if (joystickX < 0) joystickX = 0; break;
+                case 'ArrowRight': if (joystickX > 0) joystickX = 0; break;
+                case 'ArrowUp': if (joystickY < 0) joystickY = 0; break;
+                case 'ArrowDown': if (joystickY > 0) joystickY = 0; break;
+                case ' ': firePressed = false; break;
+            }
+        }
+
+        function updateGamepad() {
+            if (!gamepad) return;
+            
+            // Get the first analog stick values (axes 0 and 1)
+            const gp = navigator.getGamepads()[gamepad.index];
+            if (gp.axes[0] > 0.2 || gp.axes[0] < -0.2) {
+                joystickX = gp.axes[0];
+            } else {
+                joystickX = 0;
+            }
+            
+            if (gp.axes[1] > 0.2 || gp.axes[1] < -0.2) {
+                joystickY = gp.axes[1];
+            } else {
+                joystickY = 0;
+            }
+            
+            // Check buttons (use button 0 for fire)
+            firePressed = gp.buttons[0].pressed;
+        }
+
+        function spawnAsteroid() {
+            const side = Math.floor(Math.random() * 4);
+            let x, y;
+            
+            switch(side) {
+                case 0: // top
+                    x = Math.random() * canvas.width;
+                    y = -30;
+                    break;
+                case 1: // right
+                    x = canvas.width + 30;
+                    y = Math.random() * canvas.height;
+                    break;
+                case 2: // bottom
+                    x = Math.random() * canvas.width;
+                    y = canvas.height + 30;
+                    break;
+                case 3: // left
+                    x = -30;
+                    y = Math.random() * canvas.height;
+                    break;
+            }
+            
+            const size = 10 + Math.random() * 20;
+            const speed = 1 + Math.random() * 3;
+            const angle = Math.atan2(player.y - y, player.x - x);
+            
+            asteroids.push({
+                x, y, size, speed, angle,
+                color: `hsl(${Math.random() * 60 + 20}, 70%, 50%)`
+            });
+        }
+
+        function spawnCrystal() {
+            if (crystals.length < 5) {
+                crystals.push({
+                    x: 20 + Math.random() * (canvas.width - 40),
+                    y: 20 + Math.random() * (canvas.height - 40),
+                    size: 15,
+                    color: '#00FFFF'
+                });
+            }
+        }
+
+        function fireLaser() {
+            lasers.push({
+                x: player.x,
+                y: player.y,
+                size: 5,
+                speed: 10,
+                angle: Math.atan2(-joystickY, joystickX) || 0,
+                color: '#FFFF00'
+            });
+        }
+
+        function update(deltaTime) {
+            if (!gameRunning) return;
+            
+            // Update gamepad state
+            updateGamepad();
+            
+            // Move player
+            if (joystickX !== 0 || joystickY !== 0) {
+                const magnitude = Math.sqrt(joystickX * joystickX + joystickY * joystickY);
+                const normalizedX = joystickX / magnitude;
+                const normalizedY = joystickY / magnitude;
+                
+                player.x += normalizedX * player.speed;
+                player.y += normalizedY * player.speed;
+            }
+            
+            // Keep player on screen
+            player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
+            player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
+            
+            // Fire laser
+            if (firePressed && Math.random() < 0.1) {
+                fireLaser();
+            }
+            
+            // Spawn asteroids and crystals randomly
+            if (Math.random() < 0.02) {
+                spawnAsteroid();
+            }
+            
+            if (Math.random() < 0.01) {
+                spawnCrystal();
+            }
+            
+            // Update asteroids
+            for (let i = asteroids.length - 1; i >= 0; i--) {
+                const asteroid = asteroids[i];
+                asteroid.x += Math.cos(asteroid.angle) * asteroid.speed;
+                asteroid.y += Math.sin(asteroid.angle) * asteroid.speed;
+                
+                // Remove if off screen
+                if (asteroid.x < -50 || asteroid.x > canvas.width + 50 ||
+                    asteroid.y < -50 || asteroid.y > canvas.height + 50) {
+                    asteroids.splice(i, 1);
+                    continue;
+                }
+                
+                // Check collision with player
+                const dx = player.x - asteroid.x;
+                const dy = player.y - asteroid.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < player.size + asteroid.size) {
+                    asteroids.splice(i, 1);
+                    lives--;
+                    livesElement.textContent = lives;
+                    
+                    if (lives <= 0) {
+                        gameOver();
+                    }
+                }
+            }
+            
+            // Update lasers
+            for (let i = lasers.length - 1; i >= 0; i--) {
+                const laser = lasers[i];
+                laser.x += Math.cos(laser.angle) * laser.speed;
+                laser.y += Math.sin(laser.angle) * laser.speed;
+                
+                // Remove if off screen
+                if (laser.x < 0 || laser.x > canvas.width ||
+                    laser.y < 0 || laser.y > canvas.height) {
+                    lasers.splice(i, 1);
+                    continue;
+                }
+                
+                // Check collision with asteroids
+                for (let j = asteroids.length - 1; j >= 0; j--) {
+                    const asteroid = asteroids[j];
+                    const dx = laser.x - asteroid.x;
+                    const dy = laser.y - asteroid.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < laser.size + asteroid.size) {
+                        asteroids.splice(j, 1);
+                        lasers.splice(i, 1);
+                        score += 5;
+                        scoreElement.textContent = score;
+                        break;
+                    }
+                }
+            }
+            
+            // Update crystals
+            for (let i = crystals.length - 1; i >= 0; i--) {
+                const crystal = crystals[i];
+                
+                // Check collision with player
+                const dx = player.x - crystal.x;
+                const dy = player.y - crystal.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < player.size + crystal.size) {
+                    crystals.splice(i, 1);
+                    score += 1000;
+                    scoreElement.textContent = score;
+                }
+            }
+        }
+
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw stars (background)
+            ctx.fillStyle = '#FFF';
+            for (let i = 0; i < 100; i++) {
+                const x = (i * 12345) % canvas.width;
+                const y = (i * 54321) % canvas.height;
+                const size = (i % 3) + 1;
+                ctx.fillRect(x, y, size, size);
+            }
+            
+            // Draw player (triangle pointing in movement direction)
+            ctx.save();
+            ctx.translate(player.x, player.y);
+            
+            // Calculate angle based on joystick direction
+            const angle = Math.atan2(joystickY, joystickX);
+            ctx.rotate(angle + Math.PI/2);
+            
+            ctx.beginPath();
+            ctx.moveTo(0, -player.size);
+            ctx.lineTo(-player.size/2, player.size/2);
+            ctx.lineTo(player.size/2, player.size/2);
+            ctx.closePath();
+            ctx.fillStyle = player.color;
+            ctx.fill();
+            ctx.restore();
+            
+            // Draw asteroids
+            for (const asteroid of asteroids) {
+                ctx.beginPath();
+                ctx.arc(asteroid.x, asteroid.y, asteroid.size, 0, Math.PI * 2);
+                ctx.fillStyle = asteroid.color;
+                ctx.fill();
+            }
+            
+            // Draw crystals
+            for (const crystal of crystals) {
+                ctx.save();
+                ctx.translate(crystal.x, crystal.y);
+                
+                ctx.beginPath();
+                ctx.moveTo(0, -crystal.size);
+                ctx.lineTo(-crystal.size, 0);
+                ctx.lineTo(0, crystal.size);
+                ctx.lineTo(crystal.size, 0);
+                ctx.closePath();
+                ctx.fillStyle = crystal.color;
+                ctx.fill();
+                ctx.restore();
+            }
+            
+            // Draw lasers
+            for (const laser of lasers) {
+                ctx.beginPath();
+                ctx.arc(laser.x, laser.y, laser.size, 0, Math.PI * 2);
+                ctx.fillStyle = laser.color;
+                ctx.fill();
+            }
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            finalScoreElement.textContent = score;
+            gameOverElement.style.display = 'block';
+        }
+
+        function resetGame() {
+            gameRunning = true;
+            score = 0;
+            lives = 3;
+            asteroids = [];
+            crystals = [];
+            lasers = [];
+            player.x = canvas.width / 2;
+            player.y = canvas.height / 2;
+            scoreElement.textContent = score;
+            livesElement.textContent = lives;
+            gameOverElement.style.display = 'none';
+        }
+
+        // Game loop
+        function gameLoop(timestamp) {
+            const deltaTime = timestamp - lastTime;
+            lastTime = timestamp;
+            
+            update(deltaTime);
+            draw();
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Start the game
+        resetGame();
+        requestAnimationFrame(gameLoop);
+    </script>
+</body>
+</html>
