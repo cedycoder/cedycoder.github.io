@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cute Mexican Avocado</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #f0f8ff;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2e8b57;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .avocado {
+            position: relative;
+            width: 200px;
+            height: 220px;
+            margin: 30px auto;
+        }
+        
+        .avocado-body {
+            position: absolute;
+            width: 180px;
+            height: 200px;
+            background-color: #568203;
+            border-radius: 90px 90px 60px 60px;
+            z-index: 1;
+        }
+        
+        .avocado-inner {
+            position: absolute;
+            width: 140px;
+            height: 160px;
+            background-color: #86b049;
+            border-radius: 70px 70px 50px 50px;
+            top: 20px;
+            left: 20px;
+            z-index: 2;
+        }
+        
+        .avocado-seed {
+            position: absolute;
+            width: 60px;
+            height: 80px;
+            background-color: #d4a76a;
+            border-radius: 30px;
+            top: 60px;
+            left: 60px;
+            z-index: 3;
+        }
+        
+        .sombrero {
+            position: absolute;
+            width: 180px;
+            height: 60px;
+            background-color: #c11a2b;
+            border-radius: 90px 90px 0 0;
+            top: -30px;
+            left: 10px;
+            z-index: 4;
+        }
+        
+        .sombrero-top {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            background-color: #c11a2b;
+            border-radius: 20px;
+            top: -10px;
+            left: 80px;
+            z-index: 5;
+        }
+        
+        .sombrero-decoration {
+            position: absolute;
+            width: 180px;
+            height: 10px;
+            background-color: #f8d568;
+            top: 15px;
+            left: 10px;
+            z-index: 5;
+        }
+        
+        .eyes {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            background-color: black;
+            border-radius: 10px;
+            top: 40px;
+            left: 60px;
+            z-index: 4;
+        }
+        
+        .eyes.right {
+            left: 120px;
+        }
+        
+        .mouth {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            border-bottom: 3px solid black;
+            border-radius: 0 0 20px 20px;
+            top: 70px;
+            left: 80px;
+            z-index: 4;
+        }
+        
+        .blush {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            background-color: #ffb6c1;
+            border-radius: 10px;
+            top: 60px;
+            left: 50px;
+            z-index: 4;
+            opacity: 0.7;
+        }
+        
+        .blush.right {
+            left: 130px;
+        }
+        
+        .maracas {
+            position: absolute;
+            width: 30px;
+            height: 80px;
+            background-color: #d4a76a;
+            border-radius: 15px;
+            top: 100px;
+            left: -40px;
+            z-index: 0;
+        }
+        
+        .maracas.right {
+            left: 210px;
+        }
+        
+        .maracas-top {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-color: #c11a2b;
+            border-radius: 20px;
+            top: -20px;
+            left: -5px;
+        }
+        
+        .description {
+            margin: 20px auto;
+            max-width: 600px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .flag {
+            display: inline-block;
+            width: 30px;
+            height: 20px;
+            background: linear-gradient(to right, #006847 33%, white 33%, white 66%, #ce1126 66%);
+            margin: 0 5px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>¡Hola! I'm Carlos the Avocado <span class="flag"></span></h1>
+        
+        <div class="avocado">
+            <div class="maracas">
+                <div class="maracas-top"></div>
+            </div>
+            <div class="maracas right">
+                <div class="maracas-top"></div>
+            </div>
+            <div class="avocado-body"></div>
+            <div class="avocado-inner"></div>
+            <div class="avocado-seed"></div>
+            <div class="sombrero"></div>
+            <div class="sombrero-top"></div>
+            <div class="sombrero-decoration"></div>
+            <div class="eyes"></div>
+            <div class="eyes right"></div>
+            <div class="blush"></div>
+            <div class="blush right"></div>
+            <div class="mouth"></div>
+        </div>
+        
+        <div class="description">
+            <p>Meet Carlos, the happiest avocado from Mexico! He loves wearing his colorful sombrero, dancing to mariachi music, and of course, being delicious in tacos and guacamole.</p>
+            <p>Did you know? Mexico produces about 30% of the world's avocados, mostly in the state of Michoacán.</p>
+            <p>¡Viva el aguacate!</p>
+        </div>
+    </div>
+</body>
+</html>
