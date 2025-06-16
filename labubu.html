@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strawberry Labubu</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #fff0f5;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-image: radial-gradient(#ffc0cb 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.2);
+            border: 3px solid #ffb6c1;
+        }
+        
+        h1 {
+            color: #ff1493;
+            text-shadow: 2px 2px 4px rgba(255, 182, 193, 0.5);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #ff69b4;
+            font-size: 1.2em;
+            margin-top: 0;
+        }
+        
+        .labubu {
+            position: relative;
+            width: 250px;
+            height: 300px;
+            margin: 30px auto;
+        }
+        
+        .head {
+            position: absolute;
+            width: 200px;
+            height: 220px;
+            background-color: #ff6b81;
+            border-radius: 100px 100px 80px 80px;
+            top: 40px;
+            left: 25px;
+            z-index: 1;
+            box-shadow: inset -10px -10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .face {
+            position: absolute;
+            width: 160px;
+            height: 180px;
+            background-color: #ff8fab;
+            border-radius: 80px 80px 60px 60px;
+            top: 50px;
+            left: 45px;
+            z-index: 2;
+        }
+        
+        .ears {
+            position: absolute;
+            width: 60px;
+            height: 80px;
+            background-color: #ff6b81;
+            border-radius: 30px;
+            top: 0;
+            left: 30px;
+            z-index: 0;
+            transform: rotate(-30deg);
+        }
+        
+        .ears.right {
+            left: 160px;
+            transform: rotate(30deg);
+        }
+        
+        .eyes {
+            position: absolute;
+            width: 40px;
+            height: 50px;
+            background-color: white;
+            border-radius: 20px;
+            top: 90px;
+            left: 60px;
+            z-index: 3;
+        }
+        
+        .eyes.right {
+            left: 150px;
+        }
+        
+        .pupils {
+            position: absolute;
+            width: 20px;
+            height: 30px;
+            background-color: #333;
+            border-radius: 10px;
+            top: 10px;
+            left: 10px;
+            z-index: 4;
+        }
+        
+        .mouth {
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            background-color: #ff4777;
+            border-radius: 0 0 30px 30px;
+            top: 160px;
+            left: 100px;
+            z-index: 3;
+        }
+        
+        .teeth {
+            position: absolute;
+            width: 50px;
+            height: 15px;
+            background-color: white;
+            border-radius: 0 0 10px 10px;
+            top: 0;
+            left: 5px;
+            z-index: 4;
+        }
+        
+        .strawberry-leaf {
+            position: absolute;
+            width: 80px;
+            height: 40px;
+            background-color: #7cfc00;
+            border-radius: 40px 40px 0 0;
+            top: -20px;
+            left: 85px;
+            z-index: 0;
+            transform: rotate(180deg);
+        }
+        
+        .leaf-notch {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #ff8fab;
+            border-radius: 10px;
+            top: -10px;
+            left: 30px;
+            z-index: 1;
+        }
+        
+        .seeds {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff4777;
+            border-radius: 50%;
+            z-index: 3;
+        }
+        
+        .arms {
+            position: absolute;
+            width: 30px;
+            height: 80px;
+            background-color: #ff6b81;
+            border-radius: 15px;
+            top: 150px;
+            left: 10px;
+            z-index: 0;
+            transform: rotate(20deg);
+        }
+        
+        .arms.right {
+            left: 210px;
+            transform: rotate(-20deg);
+        }
+        
+        .description {
+            margin: 20px auto;
+            max-width: 600px;
+            line-height: 1.6;
+            color: #555;
+            font-size: 1.1em;
+        }
+        
+        .strawberry {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: #ff6b81;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            margin: 0 5px;
+            position: relative;
+        }
+        
+        .strawberry:after {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 5px;
+            background-color: #7cfc00;
+            border-radius: 5px 5px 0 0;
+            top: -5px;
+            left: 5px;
+            transform: rotate(180deg);
+        }
+        
+        .footer {
+            margin-top: 30px;
+            color: #ff69b4;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Strawberry Labubu</h1>
+        <p class="subtitle">Sweetest berry in the forest <span class="strawberry"></span><span class="strawberry"></span><span class="strawberry"></span></p>
+        
+        <div class="labubu">
+            <div class="ears"></div>
+            <div class="ears right"></div>
+            <div class="strawberry-leaf"></div>
+            <div class="leaf-notch"></div>
+            <div class="head"></div>
+            <div class="face"></div>
+            <div class="arms"></div>
+            <div class="arms right"></div>
+            <div class="eyes"></div>
+            <div class="eyes right"></div>
+            <div class="pupils"></div>
+            <div class="pupils right"></div>
+            <div class="mouth"></div>
+            <div class="teeth"></div>
+            
+            <!-- Strawberry seeds -->
+            <div class="seeds" style="top: 110px; left: 80px;"></div>
+            <div class="seeds" style="top: 120px; left: 120px;"></div>
+            <div class="seeds" style="top: 100px; left: 150px;"></div>
+            <div class="seeds" style="top: 130px; left: 90px;"></div>
+            <div class="seeds" style="top: 140px; left: 140px;"></div>
+        </div>
+        
+        <div class="description">
+            <p>Meet Strawberry Labubu, the most adorable creature from the enchanted fruit forest! With her rosy cheeks and sweet strawberry scent, she brightens everyone's day.</p>
+            <p>Strawberry Labubu loves:</p>
+            <p>- Dancing in the morning dew<br>
+               - Sharing berries with friends<br>
+               - Curling up in flower petals for naps<br>
+               - Her signature leafy hat</p>
+            <p>She might look mischievous, but she's all sweetness inside - just like a perfect strawberry!</p>
+        </div>
+        
+        <div class="footer">
+            Made with <span style="color:red">♥</span> for cute creatures everywhere
+        </div>
+    </div>
+</body>
+</html>
