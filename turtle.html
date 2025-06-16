@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cute Turtle</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #e0f7fa;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-image: radial-gradient(#80deea 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 150, 136, 0.2);
+            border: 3px solid #4db6ac;
+        }
+        
+        h1 {
+            color: #00796b;
+            text-shadow: 2px 2px 4px rgba(77, 182, 172, 0.5);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #00897b;
+            font-size: 1.2em;
+            margin-top: 0;
+        }
+        
+        .turtle {
+            position: relative;
+            width: 300px;
+            height: 280px;
+            margin: 30px auto;
+        }
+        
+        .shell {
+            position: absolute;
+            width: 180px;
+            height: 200px;
+            background-color: #8bc34a;
+            border-radius: 90px 90px 60px 60px;
+            top: 60px;
+            left: 60px;
+            z-index: 1;
+            box-shadow: inset -10px -10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .shell-pattern {
+            position: absolute;
+            width: 160px;
+            height: 180px;
+            border-radius: 80px 80px 50px 50px;
+            border: 8px solid #689f38;
+            top: 70px;
+            left: 70px;
+            z-index: 2;
+        }
+        
+        .head {
+            position: absolute;
+            width: 80px;
+            height: 60px;
+            background-color: #8bc34a;
+            border-radius: 40px;
+            top: 100px;
+            left: 30px;
+            z-index: 3;
+        }
+        
+        .eyes {
+            position: absolute;
+            width: 15px;
+            height: 20px;
+            background-color: white;
+            border-radius: 10px;
+            top: 110px;
+            left: 50px;
+            z-index: 4;
+        }
+        
+        .eyes.right {
+            left: 80px;
+        }
+        
+        .pupils {
+            position: absolute;
+            width: 8px;
+            height: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            top: 113px;
+            left: 53px;
+            z-index: 5;
+        }
+        
+        .pupils.right {
+            left: 83px;
+        }
+        
+        .mouth {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            border-bottom: 3px solid #333;
+            border-radius: 0 0 10px 10px;
+            top: 130px;
+            left: 70px;
+            z-index: 4;
+        }
+        
+        .legs {
+            position: absolute;
+            width: 40px;
+            height: 30px;
+            background-color: #8bc34a;
+            border-radius: 20px;
+            top: 220px;
+            left: 80px;
+            z-index: 3;
+        }
+        
+        .legs.right {
+            left: 180px;
+        }
+        
+        .legs.front {
+            top: 170px;
+            left: 60px;
+            transform: rotate(30deg);
+        }
+        
+        .legs.front.right {
+            left: 200px;
+            transform: rotate(-30deg);
+        }
+        
+        .tail {
+            position: absolute;
+            width: 30px;
+            height: 20px;
+            background-color: #8bc34a;
+            border-radius: 0 15px 15px 0;
+            top: 220px;
+            left: 240px;
+            z-index: 3;
+            transform: rotate(30deg);
+        }
+        
+        .bubbles {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #b2ebf2;
+            border-radius: 50%;
+            z-index: 0;
+        }
+        
+        .description {
+            margin: 20px auto;
+            max-width: 600px;
+            line-height: 1.6;
+            color: #555;
+            font-size: 1.1em;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            color: #00897b;
+            font-size: 0.9em;
+        }
+        
+        .turtle-icon {
+            display: inline-block;
+            width: 20px;
+            height: 15px;
+            background-color: #8bc34a;
+            border-radius: 10px 10px 0 0;
+            margin: 0 5px;
+            position: relative;
+        }
+        
+        .turtle-icon:after {
+            content: "";
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #689f38;
+            border-radius: 50%;
+            top: 3px;
+            left: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cutie the Turtle</h1>
+        <p class="subtitle">Slow and steady wins the race <span class="turtle-icon"></span><span class="turtle-icon"></span><span class="turtle-icon"></span></p>
+        
+        <div class="turtle">
+            <div class="shell"></div>
+            <div class="shell-pattern"></div>
+            <div class="head"></div>
+            <div class="eyes"></div>
+            <div class="eyes right"></div>
+            <div class="pupils"></div>
+            <div class="pupils right"></div>
+            <div class="mouth"></div>
+            <div class="legs"></div>
+            <div class="legs right"></div>
+            <div class="legs front"></div>
+            <div class="legs front right"></div>
+            <div class="tail"></div>
+            
+            <!-- Bubbles -->
+            <div class="bubbles" style="top: 50px; left: 100px; width: 15px; height: 15px;"></div>
+            <div class="bubbles" style="top: 70px; left: 200px; width: 10px; height: 10px;"></div>
+            <div class="bubbles" style="top: 40px; left: 150px;"></div>
+        </div>
+        
+        <div class="description">
+            <p>Meet Cutie the Turtle, the most adorable shelled friend you'll ever meet! With her bright green shell and cheerful smile, she brings joy wherever she goes.</p>
+            <p>Cutie's favorite activities:</p>
+            <p>- Sunbathing on warm rocks<br>
+               - Swimming with fish friends<br>
+               - Munching on delicious greens<br>
+               - Telling slow but wonderful stories</p>
+            <p>She may not be the fastest, but she's definitely the friendliest turtle in the pond!</p>
+        </div>
+        
+        <div class="footer">
+            Made with <span style="color:#e91e63">♥</span> for all turtle lovers
+        </div>
+    </div>
+</body>
+</html>
